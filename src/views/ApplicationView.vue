@@ -1,71 +1,65 @@
 <template>
-  <div class="container">
-    <Header :theme="theme" />
-    <template v-if="isResponse">
-      <div id="application-form" class="row pt-2">
-        <div class="col-12">
-          <h4 class="text-center py-2">
-            {{ measure.name + ": " + appForm.form.name }}
-          </h4>
-        </div>
-        <div class="col-10">
-          <Form
-            :form="appForm.form.scheme"
-            :submission="appForm"
-            language="ru"
-            :options="{
-              readOnly: !appForm.active,
-              i18n: formOptions.i18n,
-            }"
-            ref="vueForm"
-          />
-        </div>
-        <div
-          v-if="appForm.form.actions && appForm.form.actions.length > 0"
-          id="action-buttons"
-          class="col-2"
-        >
-          <template v-for="action of appForm.form.actions">
-            <template v-if="appForm.active || action.alwaysActive">
-              <button
-                :key="action.id"
-                type="button"
-                class="btn btn-block btn-primary"
-                @click="invokeAction(action)"
-              >
-                {{ action.name }}
-              </button>
-            </template>
-          </template>
-        </div>
-      </div>
-    </template>
-
-    <template v-else-if="isLoading">
-      <div class="card pt-2">
-        <div class="card-body text-center">
-          <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
+  <section class="applcation">
+    <div class="container pt-1">
+      <template v-if="isResponse">
+        <h5 class="title-primary text-center">
+          {{ measure.name + ": " + appForm.form.name }}
+        </h5>
+        <div id="application-form" class="row">
+          <div :class="isActionsOnForm ? 'col-10' : 'col-12'">
+            <!--            <Form-->
+            <!--              :form="appForm.form.scheme"-->
+            <!--              :submission="appForm"-->
+            <!--              language="ru"-->
+            <!--              :options="{-->
+            <!--                readOnly: !appForm.active,-->
+            <!--                i18n: formOptions.i18n,-->
+            <!--              }"-->
+            <!--              ref="vueForm"-->
+            <!--            />-->
           </div>
-          <div>{{ loadingComment }}</div>
+          <div v-if="isActionsOnForm" id="action-buttons" class="col-2">
+            <template v-for="action of appForm.form.actions">
+              <template v-if="appForm.active || action.alwaysActive">
+                <button
+                  :key="action.id"
+                  type="button"
+                  class="btn btn-block btn-primary"
+                  @click="invokeAction(action)"
+                >
+                  {{ action.name }}
+                </button>
+              </template>
+            </template>
+          </div>
         </div>
-      </div>
-    </template>
-  </div>
+      </template>
+
+      <template v-else-if="isLoading">
+        <div class="card pt-2 mt-1">
+          <div class="card-body text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div>{{ loadingComment }}</div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </section>
 </template>
 
 <script>
-import { Form } from "vue-formio";
+// import { Form } from "vue-formio";
+// import { Formio as Form } from "../../public/formio.full.min";
 import axios from "axios";
-import Header from "../components/Header";
 
 export default {
   name: "ApplicationView",
   components: {
-    Header,
-    Form,
+    // Form,
   },
-  props: ["url", "user", "theme"],
+  props: ["url", "user", "theme", "authUser"],
 
   data() {
     return {
@@ -207,15 +201,24 @@ export default {
     };
   },
 
+  computed: {
+    isActionsOnForm: function () {
+      return !!(
+        this.appForm.form.actions && this.appForm.form.actions.length > 0
+      );
+    },
+  },
+
   methods: {
     // Информация о мере поддержки
     getMeasure() {
       axios
         .get(this.url + "serv/get-model?id=" + this.$route.params.modelId)
         .then((response) => {
-          console.log("getMeasure");
-          console.log(response);
           this.measure = response.data;
+          console.groupCollapsed("Информация о мере поддержки");
+          console.log(response.data);
+          console.groupEnd();
         });
     },
 
@@ -242,16 +245,30 @@ export default {
           withCredentials: true,
         })
         .then((response) => {
-          console.log("Стартовая форма");
-          console.log(response);
           const newForm = response.data.applicationDTO;
           newForm.data = JSON.parse(newForm.data);
           newForm.form.scheme = JSON.parse(newForm.form.scheme);
           this.appForm = newForm;
+          if (id) {
+            console.groupCollapsed("Ранее сохраненная форма обращения");
+          } else {
+            console.groupCollapsed("Начальная форма обращения");
+          }
+          console.log(response.data.applicationDTO);
+          console.groupEnd();
         })
         .then(() => {
           this.isResponse = true;
           this.isLoading = false;
+          // -----
+          window.Formio.createForm(
+            document.getElementById("formio"),
+            this.appForm.form.scheme,
+            {
+              language: "ru",
+            }
+          );
+          // -----
         });
     },
 
@@ -515,7 +532,7 @@ export default {
   },
 
   mounted: function () {
-    this.loadCrypto();
+    // this.loadCrypto();
     this.getMeasure();
     if (+this.$route.params.appId) {
       this.getStartForm(this.$route.params.appId);

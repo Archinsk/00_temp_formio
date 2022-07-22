@@ -1,13 +1,12 @@
 <template>
-  <div class="card-list row row-cols-1">
-    <div
+  <div class="card-list">
+    <MeasuresCardsListItem
       v-for="measuresItem of measuresCardsList"
       :key="measuresItem.id"
-      class="col"
-    >
-      <MeasuresCardsListItem :measure="measuresItem" :theme="theme" />
-    </div>
-    <div class="col">
+      :measure="measuresItem"
+      :theme="theme"
+    />
+    <div>
       <Pagination
         v-show="itemsTotal > pageSize"
         :items-total="itemsTotal"

@@ -13,6 +13,29 @@
       integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
       crossorigin="anonymous"
     />
+
+    <link rel="stylesheet" href="formio.full.min.css" crossorigin="anonymous" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js"
+      integrity="sha512-6ORWJX/LrnSjBzwefdNUyLCMTIsGoNP6NftMy2UAm1JBm6PRZCO1d7OHBStWpVFZLO+RerTvqX/Z9mBFfCJZ4A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+      integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
+      integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="auth.js"></script>
+    <script src="formio.utils.js"></script>
+    <script src="formio.full.js" crossorigin="anonymous"></script>
   </head>
   <body>
     <noscript>
@@ -23,6 +46,7 @@
       >
     </noscript>
     <div id="app"></div>
+    <div id="formio" :class="isActionsOnForm ? 'col-10' : 'col-12'"></div>
     <!--    Bootstrap JS-->
     <script
       src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
@@ -34,5 +58,17 @@
       integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
       crossorigin="anonymous"
     ></script>
+    <!--    Формио-->
+    <script>
+      //Адрес закрытого контура - используется для отправки запросов для справочников, имена переменных нужно оставить такими как есть потому что сам плагин formio
+      //будет по ним обращаться для загрузки данных справочников например, возможно в дальнейшем это надо будет переделать через апи закрытой части
+      var privateCircuitPort = "8080";
+      var privateCircuitHost = "localhost";
+    </script>
+    <script>
+      //Создание элемента формы
+      var formInstance = null;
+      var formData = null;
+    </script>
   </body>
 </html>

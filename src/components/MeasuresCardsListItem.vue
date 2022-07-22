@@ -1,14 +1,14 @@
 <template>
-  <div class="card measure-card">
-    <div class="card-body row">
-      <h5 class="card-title">
-        <span :class="'badge badge-' + theme">{{ measure.id }}</span
+  <div class="card measure-card mb-2">
+    <div class="card-body d-flex justify-content-between align-items-center">
+      <h6 class="card-title mb-0">
+        <span :class="'badge mr-2 badge-' + theme">{{ measure.id }}</span
         >{{ measure.name }}
-      </h5>
-      <div class="measure-buttons col">
+      </h6>
+      <div class="measure-button">
         <router-link
           :to="'/subsidy_info/model/' + measure.id"
-          :class="'btn btn-outline-' + theme"
+          :class="'btn btn-sm btn-outline-' + theme"
           role="button"
           >Получить поддержку</router-link
         >

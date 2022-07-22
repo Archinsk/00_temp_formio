@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <Header :theme="theme" />
     <article class="profile">
       <h4 class="title-primary text-center">Личный кабинет</h4>
       <section class="user-info">
@@ -84,17 +83,15 @@
 <script>
 import Applications from "@/components/Applications";
 import axios from "axios";
-import Header from "../components/Header";
 
 export default {
   name: "AccountInfoView",
 
   components: {
-    Header,
     Applications,
   },
 
-  props: ["url", "user", "theme"],
+  props: ["url", "user", "theme", "authUser"],
 
   data() {
     return {
